@@ -150,3 +150,81 @@ class ScootyUnit(TimeStampedModel):
 
     def __str__(self):
         return f"{self.chassis_number} - {self.variant}"
+
+
+class Battery(TimeStampedModel):
+
+    class BatteryType(models.IntegerChoices):
+        LITHIUM = 0, "Lithium"
+        ION = 1, "Ion"
+
+    class BMSType(models.IntegerChoices):
+        JK_BMS = 0, "JK BMS"
+        JP_BMS = 1, "JP BMS"
+
+    name = models.CharField(max_length=100)
+
+    battery_type = models.PositiveSmallIntegerField(
+        choices=BatteryType.choices
+    )
+
+    bms_type = models.PositiveSmallIntegerField(
+        choices=BMSType.choices
+    )
+
+    total_cell = models.PositiveIntegerField()
+
+    charging_time = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        help_text="Charging time in hours"
+    )
+
+    run_time = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        help_text="Expected running time in hours"
+    )
+
+    battery_lifecycle = models.PositiveSmallIntegerField(
+        help_text="Expected battery lifespan in years"
+    )
+
+    app_control_supported = models.BooleanField(
+        default=False,
+        help_text="Whether Bluetooth mobile app control is supported"
+    )
+
+    voltage = models.DecimalField(
+        max_digits=8,
+        decimal_places=2
+    )
+
+    capacity_ah = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        help_text="Battery capacity in Ampere-hours (Ah)"
+    )
+
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        help_text="Selling price for battery-only purchase"
+    )
+
+    scooty_bundle_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        help_text="Battery price when purchased with a scooty"
+    )
+
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = "battery"
+        ordering = ["name"]
+        verbose_name = "Battery"
+        verbose_name_plural = "Batteries"
+
+    def __str__(self):
+        return self.name
